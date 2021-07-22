@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.runtime.Composable
 import com.kyg_prototype.kyg.ui.theme.KYGTheme
 
 
@@ -26,3 +27,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+

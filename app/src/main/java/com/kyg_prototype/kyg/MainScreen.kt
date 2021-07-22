@@ -9,10 +9,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,9 +48,7 @@ fun MainScreen(gameViewModel: GameViewModel) {
     ) {
         Column {
             GreetingSection()
-            ChipSection(gameViewModel)  // When the Start Game button at the bottom of the screen is pressed,
-                                        // a game chip should be added to the screen,
-                                        // and the text should change to End Game.
+            ChipSection(gameViewModel)
             ScoreBoard()
             FitnessAnalytics(
                 features = listOf(
@@ -75,75 +70,20 @@ fun MainScreen(gameViewModel: GameViewModel) {
                     )
                 )
             )
-        }
-        BottomButton(items = listOf(
-            BottomButtonContent("Start Game")
-
-        ), modifier = Modifier.align(Alignment.BottomCenter))
-    }
-}
-
-@Composable
-fun BottomButton(
-    items: List<BottomButtonContent>,
-    modifier: Modifier = Modifier,
-    activeHighlightColor: Color = ButtonBlue,
-    activeTextColor: Color = Color.White,
-    inactiveTextColor: Color = ButtonBlue,
-    initialSelectedItemIndex: Int = 0
-) {
-    var selectedItemIndex by remember {
-        mutableStateOf(initialSelectedItemIndex)
-    }
-    Row(
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(DeepBlue)
-            .padding(15.dp)
-    ) {
-        items.forEachIndexed { index, item ->
-            BottomButtonItem(
-                item = item,
-                isSelected = index == selectedItemIndex,
-                activeHighlightColor = activeHighlightColor,
-                activeTextColor = activeTextColor,
-                inactiveTextColor = inactiveTextColor
-            )
-        }
-    }
-}
-
-
-
-@Composable
-fun BottomButtonItem(
-    item: BottomButtonContent,
-    isSelected: Boolean = false,
-    activeHighlightColor: Color = DeepBlue,
-    activeTextColor: Color = Color.White,
-    inactiveTextColor: Color = DeepBlue,
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.clickable {
-
-        }
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .width(300.dp)
-                .background(if (isSelected) activeHighlightColor else Color.Transparent)
-                .padding(10.dp)
-        ) {
-            Text(
-                text = item.title,
-                color = if(isSelected) activeTextColor else inactiveTextColor
-            )
+            Button(
+                onClick = { gameViewModel.addGame(Game()) },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = ButtonBlue
+                ),
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth(),
+            ) {
+                Text(
+                    "Start Game",
+                    color = TextWhite
+                )
+            }
         }
 
     }
@@ -194,16 +134,13 @@ fun GreetingSection(
 }
 
 @Composable
-// When the Start Game button at the bottom of the screen is pressed,
-// a game chip should be added to the screen,
-// and the text should change to End Game.
 fun ChipSection(gameViewModel: GameViewModel) {
-    val chips: List<Game> by gameViewModel.games.observeAsState(listOf())
+    val chip: List<Game> by gameViewModel.games.observeAsState(listOf())
     var selectedChipIndex by remember {
         mutableStateOf(0)
     }
     LazyRow {
-        items(chips.size) {
+        items(chip.size) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -216,9 +153,9 @@ fun ChipSection(gameViewModel: GameViewModel) {
                         if (selectedChipIndex == it) ButtonBlue
                         else DarkerButtonBlue
                     )
-                    .padding(30.dp)
+                    .padding(15.dp)
             ) {
-                Text(text = "${chips[it].game} ${chips.size}", color = TextWhite)
+                Text(text = "${chip[it].title} ${chip.size}", color = TextWhite)
             }
         }
     }
@@ -279,7 +216,7 @@ fun FitnessAnalytics(features: List<Feature>) {
         )
         LazyVerticalGrid(
             cells = GridCells.Fixed(2),
-            contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp, bottom = 100.dp),
+            contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp, bottom = 70.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             items(features.size) {
@@ -346,3 +283,5 @@ fun ProfileImage(
             .clip(CircleShape)
     )
 }
+
+
